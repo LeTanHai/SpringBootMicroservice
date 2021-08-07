@@ -1,0 +1,48 @@
+version: '3'
+services: 
+    config-server:
+        build: ./config-server/cloud
+        environment: 
+            CONFIGURATION_FILE: 'file:/config/application-config-server.yml'
+        ports: 
+          - "8888:8888"
+        configs:
+          - source: config-server
+            target: /config/application-config-server.yml
+            uid: '103'
+            gid: '103'
+            mode: 0440
+        networks:
+            - my-network
+        dns: 8.8.8.8
+    limit-server:
+        build: ./limit-server/cloud
+        environment: 
+            CONFIGURATION_FILE: 'file:/config/application-limit-server.yml'
+        ports: 
+          - "8080:8080"
+        configs:
+          - source: limit-server
+            target: /config/application-limit-server.yml
+            uid: '103'
+            gid: '103'
+            mode: 0440
+        depends_on: 
+            - config-server
+        networks:
+            - my-network
+        dns: 8.8.8.8
+networks:
+    my-network:
+        driver: overlay
+        attachable: true
+        ipam:
+            driver: default
+            config:
+            - subnet: 172.0.0.0/16
+configs:
+    config-server:
+        file: ./deploy/config-server/application-config-server.yml
+    limit-server:
+        file: ./deploy/limit-server/application-limit-server.yml
+    
