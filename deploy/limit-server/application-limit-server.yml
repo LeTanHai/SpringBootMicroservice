@@ -5,4 +5,4 @@ spring:
         config:
             import-check:
                 enabled: false
-            uri: http://192.168.1.9:8888
+            uri: http://54.238.109.250:8888
